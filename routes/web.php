@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [ClientController::class, 'index'])->name('guest');
 Route::get('/add/{id}', [ClientController::class, 'add'])->name('cart.add');
+Route::get('/delete/{id}', [ClientController::class, 'delete'])->name('cart.delete');
+Route::post('/update', [ClientController::class, 'update'])->name('cart.update');
 Route::get('/status', [ClientController::class, 'status']);
 
 Auth::routes();

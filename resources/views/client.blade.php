@@ -57,16 +57,17 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div id="cart" class="col-lg-6">
+                <div id="AlertUpdate" class="alert alert-success alert-dismissible fade show" role="alert" style="display: none">
+                    Qty Barang Berhasil diupdate
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
                 <div class="card shadow">
                     <div class="card-header">
                         <h6>Data Peminjaman</h6>
                     </div>
-                    @if(session('success'))
-                        <div class="alert alert-success">
-                            {{ session('success') }}
-                        </div> 
-                    @endif
                     <div class="card-body">
                         <table  class="table table-hover table-stripped" id="example2">
                             <thead>
@@ -77,18 +78,50 @@
                                     <th>Opsi</th>
                                 </tr>
                             </thead>
+                            <form method="POST" action="{{ route('cart.update') }}">
+                            @csrf
                             <tbody>
-                                {{-- @if(session('cart'))
-                                    @foreach(session('cart') as $id => $item)
+                                @if(session('cart'))
+                                    @foreach(session()->get('cart') as $id => $item)
                                             <tr>
-                                                <td>1</td>
+                                                <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $item['name'] }}</td>
-                                                <td><{{ $item['quantity'] }}/td>
-                                                <td><a href="" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a></td>
+                                                <td>
+                                                    <input type="hidden" value="{{ $item['id'] }}" name="id[]">
+                                                    <input type="number"  onchange="ubah{{ $loop->iteration }}()" class="form-control" name="qty[]" id="qty" value="{{ $item['qty'] }}"></td>
+                                                <script>
+                                                    function ubah{{ $loop->iteration }}(){
+                                                        // cons qty = document.getElementsByClassName(".qty{{ $item['id'] }}").value;
+                                                        // var qty = $(".qty{{ $item['id'] }}").val();
+                                                        // $.ajax({
+                                                        //     url: '/update',
+                                                        //     data: { qty:qty},
+                                                        //     success:function(data){
+                                                        //         alert("qty berhasil diupdate");
+                                                        //         // $("#AlertUpdate").show();
+                                                                
+                                                        //     }
+                                                        // });
+                                                        $("#delete{{ $loop->iteration }}").hide();
+                                                        $("#update{{ $loop->iteration }}").show();
+                                                     };
+                                                </script>
+                                                <td id="delete{{ $loop->iteration }}"><a href="{{ route('cart.delete', $item['id']) }}"  class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                                                </td>
+                                                <td id="update{{ $loop->iteration }}" style="display: none " >
+                                                    <button type="submit" class="btn btn-success">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </button>
+                                                </td>
                                             </tr>
-                                    @endforeach
-                               @endif --}}
+                                    @endforeach 
+                                @else
+                                    <tr>
+                                        <td colspan="4" class="text-center">Belum ada barang yang dipilih</td>
+                                    </tr>                                     
+                               @endif
                             </tbody>
+                        </form>
                         </table>
                         <br>
                         <form action="">
@@ -152,5 +185,6 @@
     $('#example2').DataTable({
         "responsive": true,
     });
+
 </script>
 @endpush

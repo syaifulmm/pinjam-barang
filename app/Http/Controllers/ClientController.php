@@ -25,20 +25,50 @@ class ClientController extends Controller
        $barang = barang::findorfail($id);
         // return $barang;
         $cart = session()->get('cart');
-        // return $cart;
-        $cart[$id] = [
-            "name" => $barang->nama_barang,
-            "qty"  => 1
-        ];
 
-        session()->put('cart', $cart);
+        if(isset($cart[$id])){
+            $cart[$id]['qty'] += 1;
+        }else{
+            // return $cart;
+            $cart[$id] = [
+                "id"   => $barang->id,
+                "name" => $barang->nama_barang,
+                "qty"  => 1
+            ];
+        }
 
-        return session()->get('cart');
-
-        
+        session()->put('cart', $cart);    
+        // return session()->get('cart');
+        return redirect()->back();
     }
 
-   
+    public function delete(Request $request, $id){
+        // $request->session()->flush();
+        $cart = session()->get('cart');
+
+        if(isset($cart[$id])){
+            unset($cart[$id]);
+            session()->put('cart', $cart);    
+        }
+        return redirect()->back();
+    }
+
+    public function update(Request $request){
+        $quantities = $request->input('qty');
+        $id = $request->input('id');
+        $cart = session()->get('cart');
+        // return $id;
+        // return $quantities;
+        for ($i =0 ; $i < count($cart) ; $i++){
+            // $a = 1;
+            $cart[$id[$i]]['qty'] = $quantities[$i];
+            // $a+=1;
+        }
+        session()->put('cart', $cart);    
+        return redirect()->back();
+    }
+
+
     
 
 }
